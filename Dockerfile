@@ -1,4 +1,5 @@
-FROM python:3.12-slim
+ARG PYTHON_IMAGE=python:3.12-slim
+FROM ${PYTHON_IMAGE}
 
 WORKDIR /app
 COPY . .
@@ -9,4 +10,3 @@ ENV APP_PORT=8000
 
 EXPOSE 8000
 CMD ["python", "run.py"]
-

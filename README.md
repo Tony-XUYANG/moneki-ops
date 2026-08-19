@@ -19,6 +19,13 @@ python run.py
 docker compose up --build
 ```
 
+中国大陆网络若无法连接 Docker Hub，可临时使用镜像代理：
+
+```powershell
+$env:PYTHON_IMAGE="docker.m.daocloud.io/library/python:3.12-slim"
+docker compose up --build
+```
+
 有 DeepSeek Key 时，先设置 `DEEPSEEK_API_KEY`。没有 Key 时默认使用 deterministic mock router；它仍然执行同一套真实数据库工具调用，只是不调用外部大模型，适合评审离线运行。
 
 ## 功能验收
