@@ -1,0 +1,16 @@
+services:
+  moneki:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      APP_HOST: 0.0.0.0
+      APP_PORT: 8000
+      DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
+      DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
+    volumes:
+      - moneki_data:/app/data
+
+volumes:
+  moneki_data:
+

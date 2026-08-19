@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Moneki 连锁餐饮经营数据与可信 AI 分析工作台">
+  <title>Moneki Ops</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Noto+Sans+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Moneki Ops 首页">
+      <span class="brand-mark">M</span>
+      <span><strong>Moneki</strong><small>OPERATIONS</small></span>
+    </a>
+    <div class="topbar-context">
+      <span class="live-dot" aria-hidden="true"></span>
+      <span id="dataset-status">数据连接中</span>
+    </div>
+    <div class="topbar-actions">
+      <span class="provider-chip" id="provider-chip">AI · --</span>
+      <button class="icon-command" id="quality-open" type="button" title="数据质量" aria-label="查看数据质量">
+        <i data-lucide="shield-check"></i>
+      </button>
+    </div>
+  </header>
+
+  <main>
+    <section class="filter-band" aria-label="经营数据筛选">
+      <div class="filter-group date-filter">
+        <label for="start-date">开始日期</label>
+        <input id="start-date" type="date">
+      </div>
+      <span class="date-separator" aria-hidden="true">—</span>
+      <div class="filter-group date-filter">
+        <label for="end-date">结束日期</label>
+        <input id="end-date" type="date">
+      </div>
+      <div class="store-picker">
+        <button id="store-toggle" type="button" aria-expanded="false" aria-controls="store-menu">
+          <i data-lucide="map-pin"></i><span id="store-label">全部门店</span><i data-lucide="chevron-down"></i>
+        </button>
+        <div id="store-menu" class="store-menu" hidden></div>
+      </div>
+      <button class="primary-command" id="apply-filters" type="button">
+        <i data-lucide="refresh-cw"></i><span>更新看板</span>
+      </button>
+    </section>
+
+    <section class="kpi-band" aria-label="核心经营指标">
+      <div class="period-caption">
+        <span>经营概览</span>
+        <strong id="period-label">--</strong>
+      </div>
+      <article class="kpi">
+        <span>营业额</span>
+        <strong id="revenue-value">--</strong>
+        <small id="revenue-change">--</small>
+      </article>
+      <article class="kpi">
+        <span>订单数</span>
+        <strong id="orders-value">--</strong>
+        <small id="orders-change">--</small>
+      </article>
+      <article class="kpi">
+        <span>客单价</span>
+        <strong id="aov-value">--</strong>
+        <small id="aov-change">--</small>
+      </article>
+    </section>
+
+    <div class="workspace-grid">
+      <div class="analytics-pane">
+        <section class="trend-section" id="trend-view" aria-labelledby="trend-title">
+          <div class="section-title-row">
+            <div>
+              <span class="section-kicker">DAILY REVENUE</span>
+              <h1 id="trend-title">营业额趋势</h1>
+            </div>
+            <div class="legend"><span></span>每日营业额</div>
+          </div>
+          <div class="chart-shell" id="chart-shell">
+            <svg id="trend-chart" viewBox="0 0 920 300" role="img" aria-label="每日营业额折线图"></svg>
+            <div class="chart-tooltip" id="chart-tooltip" hidden></div>
+          </div>
+        </section>
+
+        <section class="detail-section" aria-labelledby="detail-title">
+          <div class="detail-tabs" role="tablist" aria-label="经营明细视图">
+            <button class="tab active" id="products-tab" role="tab" aria-selected="true" aria-controls="products-panel">Top 10 商品</button>
+            <button class="tab" id="stores-tab" role="tab" aria-selected="false" aria-controls="stores-panel">门店对比</button>
+          </div>
+          <div id="products-panel" role="tabpanel" aria-labelledby="products-tab">
+            <div class="table-wrap">
+              <table>
+                <thead><tr><th>排名</th><th>商品</th><th>品类</th><th>销量</th><th>订单</th><th>营业额</th></tr></thead>
+                <tbody id="products-body"></tbody>
+              </table>
+            </div>
+          </div>
+          <div id="stores-panel" role="tabpanel" aria-labelledby="stores-tab" hidden>
+            <div class="store-compare" id="store-compare"></div>
+          </div>
+        </section>
+      </div>
+
+      <aside class="assistant-pane" aria-labelledby="assistant-title">
+        <div class="assistant-header">
+          <div>
+            <span class="section-kicker">GROUNDED ANALYSIS</span>
+            <h2 id="assistant-title">经营助手</h2>
+          </div>
+          <span class="assistant-state"><span></span>在线</span>
+        </div>
+        <div class="chat-log" id="chat-log" aria-live="polite">
+          <div class="message assistant-message">
+            <div class="message-avatar"><i data-lucide="sparkles"></i></div>
+            <div class="message-content"><p>下午好。今天想看哪段经营数据？</p></div>
+          </div>
+        </div>
+        <div class="suggestions" id="suggestions">
+          <button type="button">哪个品类的门店营业额最高？</button>
+          <button type="button">牛肉poke 六月卖了多少钱？</button>
+          <button type="button">客单价最近是涨了还是跌了？</button>
+        </div>
+        <form class="chat-form" id="chat-form">
+          <label class="sr-only" for="chat-input">向经营助手提问</label>
+          <textarea id="chat-input" rows="1" placeholder="问一条经营数据" maxlength="300" required></textarea>
+          <button type="submit" class="send-command" aria-label="发送问题" title="发送">
+            <i data-lucide="arrow-up"></i>
+          </button>
+        </form>
+      </aside>
+    </div>
+  </main>
+
+  <dialog id="quality-dialog" class="quality-dialog">
+    <div class="dialog-header">
+      <div><span class="section-kicker">DATA LINEAGE</span><h2>数据质量</h2></div>
+      <button class="icon-command" id="quality-close" type="button" aria-label="关闭数据质量" title="关闭"><i data-lucide="x"></i></button>
+    </div>
+    <div id="quality-content" class="quality-content"></div>
+  </dialog>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
+
