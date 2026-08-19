@@ -6,11 +6,11 @@ services:
     environment:
       APP_HOST: 0.0.0.0
       APP_PORT: 8000
+      DATABASE_PATH: /app/runtime/moneki.db
       DEEPSEEK_API_KEY: ${DEEPSEEK_API_KEY:-}
       DEEPSEEK_MODEL: ${DEEPSEEK_MODEL:-deepseek-chat}
     volumes:
-      - moneki_data:/app/data
+      - moneki_data:/app/runtime
 
 volumes:
   moneki_data:
-
